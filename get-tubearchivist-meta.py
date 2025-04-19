@@ -4,6 +4,22 @@ import xml.etree.ElementTree as ET
 import requests
 from PIL import Image
 
+#################################################
+#recommended layout of .info.json file
+#{
+#  "id": "",
+#  "channel_id": "",
+#  "title": "",
+#  "upload_date": "",
+#  "description": null,
+#  "categories": null,
+#  "thumbnail": null,
+#  "tags": null,
+#  "view_count": null
+#}
+#################################################
+
+
 ##########################################################
 ### Set your file path!
 ### Example
@@ -31,17 +47,17 @@ for r, d, f, in os.walk(rootfile):
     
     for file in f:
         workingfile = os.path.join(r, file)
-        nfofile = workingfile.replace('.mp4', '.nfo')
+        jsonfile = workingfile.replace('.mp4', '.info.json')
 
         if workingfile.endswith('.mp4'):
             tubeid = workingfile.split('_', 1)[1][0:11]
         
         
             try:
-                nfo = open(nfofile)
-                print("Matching NFO found for: " + tubeid)
+                json = open(jsonfile)
+                print("Matching JSON found for: " + tubeid)
             except:
-                print("Missing NFO: " + tubeid)
+                print("Missing JSON: " + tubeid)
 
                 print("Searching Elastic...")
                 search_query = {
@@ -72,9 +88,9 @@ for r, d, f, in os.walk(rootfile):
                     n4.text = hit["_source"]["youtube_id"]
 
                     tree._setroot(document)
-                    tree.write(nfofile, encoding = "UTF-8", xml_declaration = True)  
-                    os.chmod(nfofile, 0o777)
-                    print("NFO added: " + nfofile)
+                    tree.write(jsonfile, encoding = "UTF-8", xml_declaration = True)  
+                    os.chmod(jsonfile, 0o777)
+                    print("JSON added: " + jsonfile)
 
                     #get thumbnail
                     print("Get thumbnail...")
